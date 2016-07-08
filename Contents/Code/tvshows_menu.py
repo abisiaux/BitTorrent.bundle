@@ -146,17 +146,27 @@ def season_menu(title, show_title, trakt_slug, season_index):
             directory_object.summary = json_item['overview']
             directory_object.thumb   = json_item['thumb']
             directory_object.art     = json_item['art']
-            directory_object.key     = Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=json_item['episode_index'])
+            directory_object.key     = Callback(episode_lang_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=json_item['episode_index'])
             object_container.add(directory_object)
 
     return object_container
-
+    
 ################################################################################
-@route(SharedCodeService.common.PREFIX + '/' + SUBPREFIX + '/episode', season_index=int, episode_index=int)
-def episode_menu(show_title, trakt_slug, season_index, episode_index):
+@route(SharedCodeService.common.PREFIX + '/' + SUBPREFIX + '/episode_lang', season_index=int, episode_index=int)
+def episode_lang_menu(show_title, trakt_slug, season_index, episode_index):
+    object_container = ObjectContainer()
+    object_container.add(DirectoryObject(title='VF', summary='Francais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="FR")))
+    object_container.add(DirectoryObject(title='VOSTR', summary='Anglais sous titre francais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="VOSTFR")))
+    object_container.add(DirectoryObject(title='VO', summary='Anglais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="VO")))
+    
+    return object_container
+    
+################################################################################
+@route(SharedCodeService.common.PREFIX + '/' + SUBPREFIX + '/episode', season_index=int, episode_index=int, language=str)
+def episode_menu(show_title, trakt_slug, season_index, episode_index, language):
     object_container = ObjectContainer()
 
-    json_url  = Prefs['SCRAPYARD_URL'] + '/api/show/' + trakt_slug + '/season/' + str(season_index) + '/episode/' + str(episode_index)
+    json_url  = Prefs['SCRAPYARD_URL'] + '/api/show/' + trakt_slug + '/season/' + str(season_index) + '/episode/' + str(episode_index) + '/' + str(language)
     json_data = JSON.ObjectFromURL(json_url, cacheTime=CACHE_1HOUR)
 
     if json_data and 'magnets' in json_data:
