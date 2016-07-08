@@ -36,7 +36,7 @@ def movies_menu(title, page, page_index):
             directory_object.duration = json_item['runtime']
             directory_object.thumb    = json_item['thumb']
             directory_object.art      = json_item['art']
-            directory_object.key      = Callback(movie_menu, title=directory_object.title, trakt_slug=json_item['trakt_slug'])
+            directory_object.key      = Callback(movie_lang_menu, title=directory_object.title, trakt_slug=json_item['trakt_slug'])
             object_container.add(directory_object)
 
     if (page_index + 1) <= 10:
@@ -64,7 +64,7 @@ def watchlist_menu(title):
             directory_object.duration = json_item['runtime']
             directory_object.thumb    = json_item['thumb']
             directory_object.art      = json_item['art']
-            directory_object.key      = Callback(movie_menu, title=directory_object.title, trakt_slug=json_item['trakt_slug'])
+            directory_object.key      = Callback(movie_lang_menu, title=directory_object.title, trakt_slug=json_item['trakt_slug'])
             object_container.add(directory_object)
 
     object_container.objects.sort(key=lambda directory_object: directory_object.title)
@@ -88,14 +88,25 @@ def search_menu(title, query):
             directory_object.duration = json_item['runtime']
             directory_object.thumb    = json_item['thumb']
             directory_object.art      = json_item['art']
-            directory_object.key      = Callback(movie_menu, title=directory_object.title, trakt_slug=json_item['trakt_slug'])
+            directory_object.key      = Callback(movie_lang_menu, title=directory_object.title, trakt_slug=json_item['trakt_slug'])
             object_container.add(directory_object)
 
+    return object_container
+    
+################################################################################
+@route(SharedCodeService.common.PREFIX + '/' + SUBPREFIX + '/movie_lang')
+def movie_lang_menu(title, trakt_slug):
+    object_container = ObjectContainer(title2=title)
+
+    object_container.add(DirectoryObject(title='VF', summary='Francais', key=Callback(movie_menu, title=title, trakt_slug=trakt_slug, language="FR")))
+    object_container.add(DirectoryObject(title='VOSTR', summary='Anglais sous titre francais', key=Callback(movie_menu, title=title, trakt_slug=trakt_slug, language="VOSTR")))
+    object_container.add(DirectoryObject(title='VO', summary='Anglais', key=Callback(movie_menu, show_title=show_title, title=title, trakt_slug=trakt_slug, language="VO")))
+    
     return object_container
 
 ################################################################################
 @route(SharedCodeService.common.PREFIX + '/' + SUBPREFIX + '/movie')
-def movie_menu(title, trakt_slug):
+def movie_menu(title, trakt_slug, language):
     object_container = ObjectContainer(title2=title)
 
     if 'movies_watchlist' in Dict and trakt_slug in Dict['movies_watchlist']:
@@ -103,7 +114,7 @@ def movie_menu(title, trakt_slug):
     else:
         object_container.add(DirectoryObject(key=Callback(add_to_watchlist, title='Add to Watchlist', movie_title=title, trakt_slug=trakt_slug), title='Add to Watchlist', summary='Add movie to Watchlist', thumb=R('favorites.png')))
 
-    json_url  = Prefs['SCRAPYARD_URL'] + '/api/movie/' + trakt_slug
+    json_url  = Prefs['SCRAPYARD_URL'] + '/api/movie/' + trakt_slug + '/' + str(language)
     json_data = JSON.ObjectFromURL(json_url, cacheTime=CACHE_1HOUR)
 
     if json_data and 'magnets' in json_data:
