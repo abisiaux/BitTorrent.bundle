@@ -100,7 +100,7 @@ def movie_lang_menu(title, trakt_slug):
 
     object_container.add(DirectoryObject(title='VF', summary='Francais', key=Callback(movie_menu, title=title, trakt_slug=trakt_slug, language="FR")))
     object_container.add(DirectoryObject(title='VOSTR', summary='Anglais sous titre francais', key=Callback(movie_menu, title=title, trakt_slug=trakt_slug, language="VOSTR")))
-    object_container.add(DirectoryObject(title='VO', summary='Anglais', key=Callback(movie_menu, show_title=show_title, title=title, trakt_slug=trakt_slug, language="VO")))
+    object_container.add(DirectoryObject(title='VO', summary='Anglais', key=Callback(movie_menu, title=title, trakt_slug=trakt_slug, language="VO")))
     
     return object_container
 
