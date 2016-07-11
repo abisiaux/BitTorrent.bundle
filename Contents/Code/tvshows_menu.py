@@ -156,7 +156,7 @@ def season_menu(title, show_title, trakt_slug, season_index):
 def episode_lang_menu(show_title, trakt_slug, season_index, episode_index):
     object_container = ObjectContainer()
     object_container.add(DirectoryObject(title='VF', summary='Francais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="FR")))
-    object_container.add(DirectoryObject(title='VOSTR', summary='Anglais sous titre francais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="VOSTFR")))
+    object_container.add(DirectoryObject(title='VOSTFR', summary='Anglais sous titre francais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="VOSTFR")))
     object_container.add(DirectoryObject(title='VO', summary='Anglais', key=Callback(episode_menu, show_title=show_title, trakt_slug=trakt_slug, season_index=season_index, episode_index=episode_index, language="VO")))
     
     return object_container
